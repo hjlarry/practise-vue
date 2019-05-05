@@ -9,12 +9,12 @@ import './style.css'
 
 // 导出类
 export default class {
-    mount(container) {
-        document.title = 'bar'
-        container.innerHTML = template
-        container.querySelector('.bar__gofoo').addEventListener('click', () => {
-            // 调用 router.go 方法加载 /foo 页面
-            router.go('/foo')
-        })
-    }
+  mount(container) {
+    document.title = 'bar'
+    container.innerHTML = template
+    container.querySelector('.bar__gofoo').addEventListener('click', () => {
+      // 调用 router.go 方法加载 /foo 页面
+      router.go('/foo')
+    })
+  }
 }
