@@ -1,4 +1,5 @@
 const { resolve } = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const history = require('connect-history-api-fallback')
 const convert = require('koa-connect')
@@ -32,7 +33,8 @@ module.exports = {
 
 
     // 入口 js 的打包输出文件名
-    filename: 'index.js',
+    // filename: 'index.js',
+    filename: dev ? '[name].js' : '[chunkhash].js',
 
     /*
     代码中引用的文件（js、css、图片等）会根据配置合并为一个或多个包，我们称一个包为 chunk。
@@ -80,7 +82,46 @@ module.exports = {
         import htmlString from './template.html';
         template.html 的文件内容会被转成一个 js 字符串，合并到 js 文件里。
         */
-        use: 'html-loader'
+        // use: 'html-loader'
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              /*
+              html-loader 接受 attrs 参数，表示什么标签的什么属性需要调用 webpack 的 loader 进行打包。
+              比如 <img> 标签的 src 属性，webpack 会把 <img> 引用的图片打包，然后 src 的属性值替换为打包后的路径。
+              使用什么 loader 代码，同样是在 module.rules 定义中使用匹配的规则。
+
+              如果 html-loader 不指定 attrs 参数，默认值是 img:src, 意味着会默认打包 <img> 标签的图片。
+              这里我们加上 <link> 标签的 href 属性，用来打包入口 index.html 引入的 favicon.png 文件。
+              */
+              attrs: ['img:src', 'link:href']
+            }
+          }
+        ]
+      },
+
+      {
+        /*
+        匹配 favicon.png
+        上面的 html-loader 会把入口 index.html 引用的 favicon.png 图标文件解析出来进行打包
+        打包规则就按照这里指定的 loader 执行
+        */
+        test: /favicon\.png$/,
+
+        use: [
+          {
+            // 使用 file-loader
+            loader: 'file-loader',
+            options: {
+              /*
+              name：指定文件输出名
+              [hash] 为源文件的hash值，[ext] 为后缀。
+              */
+              name: '[hash].[ext]'
+            }
+          }
+        ]
       },
 
       {
@@ -102,6 +143,9 @@ module.exports = {
         css-loader 引用的图片和字体同样会匹配到这里的 test 条件
         */
         test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+
+        // 排除 favicon.png, 因为它已经由上面的 loader 处理了。如果不排除掉，它会被这个 loader 再处理一遍
+        exclude: /favicon\.png$/,
 
         /*
         使用 url-loader, 它接受一个 limit 参数，单位为字节(byte)
@@ -158,8 +202,37 @@ module.exports = {
       https://github.com/jantimon/html-webpack-plugin/issues/870
       */
       chunksSortMode: 'none'
-    })
-  ]
+    }),
+
+    /*
+    使用文件路径的 hash 作为 moduleId。
+    虽然我们使用 [chunkhash] 作为 chunk 的输出名，但仍然不够。
+    因为 chunk 内部的每个 module 都有一个 id，webpack 默认使用递增的数字作为 moduleId。
+    如果引入了一个新文件或删掉一个文件，可能会导致其他文件的 moduleId 也发生改变，
+    那么受影响的 module 所在的 chunk 的 [chunkhash] 就会发生改变，导致缓存失效。
+    因此使用文件路径的 hash 作为 moduleId 来避免这个问题。
+    */
+    new webpack.HashedModuleIdsPlugin()
+  ],
+  optimization: {
+    /*
+    上面提到 chunkFilename 指定了 chunk 打包输出的名字，那么文件名存在哪里了呢？
+    它就存在引用它的文件中。这意味着一个 chunk 文件名发生改变，会导致引用这个 chunk 文件也发生改变。
+
+    runtimeChunk 设置为 true, webpack 就会把 chunk 文件名全部存到一个单独的 chunk 中，
+    这样更新一个文件只会影响到它所在的 chunk 和 runtimeChunk，避免了引用这个 chunk 的文件也发生改变。
+    */
+    runtimeChunk: true,
+
+    splitChunks: {
+      /*
+      默认 entry 的 chunk 不会被拆分
+      因为我们使用了 html-webpack-plugin 来动态插入 <script> 标签，entry 被拆成多个 chunk 也能自动被插入到 html 中，
+      所以我们可以配置成 all, 把 entry chunk 也拆分了
+      */
+      chunks: 'all'
+    }
+  }
 }
 
 
