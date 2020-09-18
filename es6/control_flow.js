@@ -43,3 +43,44 @@ function f() {
   console.log(5); // not reachable
 }
 f(); // console 0, 1, 3; returns false
+
+/*
+三、 循环
+for、 while、 do...while和C中的差不多，可以有label作用于break、continue中
+*/
+
+var num = 0;
+for (var i = 0; i < 10; i++) {   // i 循环
+  for (var j = 0; j < 10; j++) { // j 循环
+    if (i == 5 && j == 5) {
+      break; // i = 5，j = 5 时，会跳出 j 循环
+    } // 但 i 循环会继续执行，等于跳出之后又继续执行更多次 j 循环
+    num++;
+  }
+}
+alert(num); // 输出 95
+
+var num = 0;
+outPoint:
+for (var i = 0; i < 10; i++) {
+  for (var j = 0; j < 10; j++) {
+    if (i == 5 && j == 5) {
+      break outPoint; // 在i=5，j=5时，跳出所有循环，返回到整个outPoint下方，继续执行
+    }
+    num++;
+  }
+}
+alert(num); // 输出 55
+
+// for...in 返回一个对象的所有可枚举的属性
+// for...of 语句在可迭代对象（包括Array、Map、Set、arguments 等等）上创建了一个循环，对值的每一个独特属性调用一次迭代
+let arr = [3, 5, 7];
+arr.foo = "hello";
+
+for (let i in arr) {
+  console.log(i); // 输出 "0", "1", "2", "foo"
+}
+
+for (let i of arr) {
+  console.log(i); // 输出 "3", "5", "7"
+}
