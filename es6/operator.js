@@ -38,3 +38,63 @@ console.log(+true); // 1
 ~将所有的32位取反，然后其最左边的一位如果为1则表示负数，所以`~x`相当于`-x-1`
 >>> 是无符号右移，将操作数右移x位，右边移出去的位丢弃，左边空的位用0补齐
 */
+
+/*
+五、 逻辑运算符
+&&  ||  !
+js是具备短路求值的，即false && anything 不会去运行anything而直接返回false
+*/
+
+/*
+六、 特殊运算符
+*/
+
+// delete 可删除一个对象，或一个对象的属性，或一个数组中的某个键值
+x = 42;
+var y = 43;
+myobj = new Number();
+myobj.h = 4;    // create property h
+delete x;       // returns true (can delete if declared implicitly)
+delete y;       // returns false (cannot delete if declared with var)
+delete Math.PI; // returns false (cannot delete predefined properties)
+delete myobj.h; // returns true (can delete user-defined properties)
+delete myobj;   // returns true (can delete if declared implicitly)
+// 删除数组元素，则该元素为undefined，但如果进行判断是不行的
+var trees = new Array("redwood", "bay", "cedar", "oak", "maple");
+delete trees[3];
+if (3 in trees) {
+  console.log("不会被执行");
+}
+// 但如果直接赋值为undefined，则会执行
+var trees = new Array("redwood", "bay", "cedar", "oak", "maple");
+trees[3] = undefined;
+if (3 in trees) {
+  console.log("会被执行");
+}
+
+// typeof(operand)，()是可选的
+var myFun = new Function("5 + 2");
+var shape = "round";
+var size = 1;
+var today = new Date();
+typeof myFun;     // returns "function"
+typeof shape;     // returns "string"
+typeof size;      // returns "number"
+typeof today;     // returns "object"
+typeof dontExist; // returns "undefined"
+typeof true; // returns "boolean"
+typeof null; // returns "object"
+typeof 62;            // returns "number"
+typeof 'Hello world'; // returns "string"
+typeof blur;        // returns "function"
+typeof eval;        // returns "function"
+typeof parseInt;    // returns "function"
+typeof shape.split; // returns "function"
+typeof Date;     // returns "function"
+typeof Function; // returns "function"
+typeof Math;     // returns "object"
+typeof Option;   // returns "function"
+typeof String;   // returns "function"
+
+// void (expression), ()是可选的，表明运算没有返回值
+<a href="javascript:void(0)">Click here to do nothing</a>
