@@ -73,3 +73,49 @@ var sc = `In JavaScript this is
 // 字符串替换
 var name = "Bob", time = "today";
 `Hello ${name}, how are you ${time}?`
+
+/*
+三、 索引集合
+以索引进行排序的集合主要有数组Array，以及其他类似数组的数据结构，如TypedArray
+数组类似于Py中的list，可以存储不同的对象，TypedArray类似于Py中的Array可存储二进制数据类型
+*/
+
+// 以下根据元素创建数组的语句等效
+var arr = new Array(element0, element1, element2, elementN);
+var arr = Array(element0, element1, element2, elementN);
+var arr = [element0, element1, element2, elementN];
+
+// 根据长度创建数组
+var arr = new Array(arrayLength);
+var arr = Array(arrayLength);
+// 这样有同样的效果
+var arr = [];
+arr.length = arrayLength;
+
+// Js实际上是将元素作为标准的对象属性来存储，把数组索引作为属性名
+// 长度属性是特殊的，它总是返回最后一个元素的索引值加1
+var cats = [];
+cats[30] = ['Dusty'];
+console.log(cats.length); // 31
+
+var cats = ['Dusty', 'Misty', 'Twiggy'];
+console.log(cats.length); // 3
+cats.length = 2;
+console.log(cats); // logs "Dusty,Misty" - Twiggy has been removed
+cats.length = 0;
+console.log(cats); // logs nothing; the cats array is empty
+cats.length = 3;
+console.log(cats); // [undefined, undefined, undefined]
+
+// 数组遍历主要用两种方法
+var colors = ['red', 'green', 'blue'];
+for (var i = 0; i < colors.length; i++) {
+  console.log(colors[i]);
+}
+var colors = ['red', 'green', 'blue'];
+colors.forEach(function(color) {
+  console.log(color);
+});
+// ES6的写法
+let colors = ['red', 'green', 'blue']
+colors.forEach(color => console.log(color))
