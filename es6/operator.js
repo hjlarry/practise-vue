@@ -47,6 +47,7 @@ js是具备短路求值的，即false && anything 不会去运行anything而直�
 
 /*
 六、 特殊运算符
+delete   typeof   void
 */
 
 // delete 可删除一个对象，或一个对象的属性，或一个数组中的某个键值
@@ -98,3 +99,31 @@ typeof String;   // returns "function"
 
 // void (expression), ()是可选的，表明运算没有返回值
 <a href="javascript:void(0)">Click here to do nothing</a>
+
+/*
+七、 关系运算符
+in   instanceof
+*/
+// Arrays
+var trees = new Array("redwood", "bay", "cedar", "oak", "maple");
+0 in trees;        // returns true
+3 in trees;        // returns true
+6 in trees;        // returns false
+"bay" in trees;    // returns false (必须是索引号，而不能用于数组中的值)
+"length" in trees; // returns true (length is an Array property)
+
+// Predefined objects
+"PI" in Math;          // returns true
+var myString = new String("coral");
+"length" in myString;  // returns true
+
+// Custom objects
+var mycar = { make: "Honda", model: "Accord", year: 1998 };
+"make" in mycar;  // returns true
+"model" in mycar; // returns true
+
+
+var theDay = new Date(1995, 12, 17);
+if (theDay instanceof Date) {
+  // statements to execute
+}
