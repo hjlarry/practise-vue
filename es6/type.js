@@ -119,3 +119,40 @@ colors.forEach(function(color) {
 // ES6的写法
 let colors = ['red', 'green', 'blue']
 colors.forEach(color => console.log(color))
+
+/*
+四、map和set
+map是es6引入的，但object也可以设置键值对、根据键获取值、删除键、检测某键的存在，和map有什么区别呢？
+1. object键都是Strings或Symbols类型，map键可以是任意类型
+2. object的size需要手动计算，而map可以直接获取
+3. map的遍历遵循插入的顺序
+4. object创建时有原型，所以有一些默认的键
+此外，ES6还加入了weakmap对象，以不影响GC
+*/
+
+var sayings = new Map();
+sayings.set('dog', 'woof');
+sayings.set('cat', 'meow');
+sayings.set('elephant', 'toot');
+sayings.size; // 3
+sayings.get('fox'); // undefined
+sayings.has('bird'); // false
+sayings.delete('dog');
+sayings.has('dog'); // false
+for (var [key, value] of sayings) { //遍历
+  console.log(key + ' goes ' + value);
+}
+sayings.clear();
+sayings.size; // 0
+
+
+var mySet = new Set();
+mySet.add(1);
+mySet.add("some text");
+mySet.add("foo");
+mySet.has(1); // true
+mySet.delete("foo");
+mySet.size; // 2
+for (let item of mySet) console.log(item);
+var a = Array.from(mySet); // 集合转列表
+var b = new Set(a); // 列表转集合
