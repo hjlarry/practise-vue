@@ -34,3 +34,32 @@ function listAllProperties(o) {
 }
 listAllProperties(myCar);
 
+/*
+二、 对象的创建
+可以使用字面量来创建，也可以使用构造函数来创建，还可以用Object.create()创建
+*/
+// 字面量创建
+var myHonda = { color: "red", wheels: 4, engine: { cylinders: 4, size: 2.2 } };
+
+// 构造函数创建
+function Car(make, model, year) {
+  this.make = make;
+  this.model = model;
+  this.year = year;
+}
+var mycar = new Car("Eagle", "Talon TSi", 1993);  // 然后用new创建实例
+
+// 用Object.create()创建，可以为创建的对象选择一个原型对象
+var Animal = {
+  type: "Invertebrates", // 属性默认值
+  displayType: function() {  // 用于显示type属性的方法
+    console.log(this.type);
+  }
+}
+// 创建一种新的动物——animal1 
+var animal1 = Object.create(Animal);
+animal1.displayType(); // Output:Invertebrates
+// 创建一种新的动物——Fishes
+var fish = Object.create(Animal);
+fish.type = "Fishes";
+fish.displayType(); // Output:Fishes
