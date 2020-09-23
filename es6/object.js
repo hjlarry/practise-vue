@@ -63,3 +63,54 @@ animal1.displayType(); // Output:Invertebrates
 var fish = Object.create(Animal);
 fish.type = "Fishes";
 fish.displayType(); // Output:Fishes
+
+/*
+三、 定义方法
+方法是关联到对象的函数，js支持定义getter和setter方法
+*/
+
+// 定义方式一
+objectName.methodname = function_name;
+
+var myObj = {
+  // 定义方式二
+  myMethod: function(params) {
+    // ...do something
+  },
+
+  // 定义方式三
+  myOtherMethod(params) {
+    // ...do something else
+  }
+};
+
+
+// 初始化时添加getter和setter
+var o = {
+  a: 7,
+  get b() {
+    return this.a + 1;
+  },
+  set c(x) {
+    this.a = x / 2
+  }
+};
+console.log(o.a); // 7
+console.log(o.b); // 8
+o.c = 50;
+console.log(o.a); // 25
+
+// 已创建的对象增加getter和setter需要使用Object.defineProperties
+var o = { a: 0 }
+Object.defineProperties(o, {
+  "b": { get: function() { return this.a + 1; } },
+  "c": { set: function(x) { this.a = x / 2; } }
+});
+o.c = 10
+console.log(o.b)
+
+/*
+四、 其他
+使用delete删除属性时只能删掉不是继承而来的属性
+对象是引用类型，所以两个对象相比较时永远不会相等，即使他们的属性完全相同，只有比较一个对象和该对象的引用才为true
+*/
