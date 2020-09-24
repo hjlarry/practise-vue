@@ -221,3 +221,42 @@ var jane = new Engineer;
 // jane.dept is 'engineering'
 // jane.projects is []
 // jane.machine is ''
+
+/*
+六、 更灵活的构造器
+*/
+
+function Employee(name, dept) {
+  this.name = name || "";
+  this.dept = dept || "general";
+}
+
+function WorkerBee(projs) {
+  this.projects = projs || [];
+}
+WorkerBee.prototype = new Employee;
+
+function Engineer(projs, mach) {
+  this.base = WorkerBee;
+  this.base(projs);
+  this.machine = mach || "";
+}
+Engineer.prototype = new WorkerBee;
+
+var mark = new WorkerBee([1, 3, 5]);
+// mark.name is ''
+// mark.dept is ''
+// mark.projects is [1, 3, 5]
+
+var jane = new Engineer(["navigator", "javascript"], "belau");
+// jane.name is ''
+// jane.dept is ''
+// jane.projects is ["navigator", "javascript"]
+// jane.machine is 'belau'
+
+// base只是一个新的属性，指向WorkerBee的构造函数，也可以叫别的名字
+// 还可以使用别的形式
+function Engineer(projs, mach) {
+  WorkerBee.call(this, projs);
+  this.machine = mach || "";
+}
