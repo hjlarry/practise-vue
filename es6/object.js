@@ -114,3 +114,110 @@ console.log(o.b)
 使用delete删除属性时只能删掉不是继承而来的属性
 对象是引用类型，所以两个对象相比较时永远不会相等，即使他们的属性完全相同，只有比较一个对象和该对象的引用才为true
 */
+
+/*
+五、 基于类的Java和基于原型的JS关于对象系统的对比
+
+Java: 类和实例是不同的事物。  JS: 所有的对象都是实例
+Java: 通过类定义来定义类，构造器方法来实例化。  JS: 通过构造器函数来定义和创建一组对象
+Java和JS均通过new操作符来创建单个对象
+Java: 通过类定义来定义子类，从而构建对象的层级结构。  JS: 指定一个对象为原型，与构造函数一起构建对象的层级结构
+Java: 类定义时确定了实例的所有属性，无法运行时动态添加属性。  JS: 构造器函数或原型只是指定实例初始的属性集，允许动态地向单个的对象或者整个对象集中添加或移除属性
+*/
+
+// ES6
+// class Employee {
+//   constructor() {
+//     this.name = '';
+//     this.dept = 'general';
+//   }
+// }
+
+
+function Employee() {
+  this.name = '';
+  this.dept = 'general';
+}
+
+function Manager() {
+  Employee.call(this);
+  this.reports = [];
+}
+Manager.prototype = Object.create(Employee.prototype);
+Manager.prototype.constructor = Manager;
+
+function WorkerBee() {
+  Employee.call(this);
+  this.projects = [];
+}
+WorkerBee.prototype = Object.create(Employee.prototype);
+WorkerBee.prototype.constructor = WorkerBee;
+
+function SalesPerson() {
+  WorkerBee.call(this);
+  this.dept = 'sales';
+  this.quota = 100;
+}
+SalesPerson.prototype = Object.create(WorkerBee.prototype);
+SalesPerson.prototype.constructor = SalesPerson;
+
+function Engineer() {
+  WorkerBee.call(this);
+  this.dept = 'engineering';
+  this.machine = '';
+}
+Engineer.prototype = Object.create(WorkerBee.prototype)
+Engineer.prototype.constructor = Engineer;
+
+/*
+Java写法对比
+public class Employee {
+   public String name = "";
+   public String dept = "general";
+}
+
+public class Manager extends Employee {
+   public Employee[] reports =
+       new Employee[0];
+}
+
+public class WorkerBee extends Employee {
+   public String[] projects = new String[0];
+}
+
+public class SalesPerson extends WorkerBee {
+   public String dept = "sales";
+   public double quota = 100.0;
+}
+
+public class Engineer extends WorkerBee {
+   public String dept = "engineering";
+   public String machine = "";
+}
+*/
+
+var jim = new Employee;
+// jim.name is ''
+// jim.dept is 'general'
+
+var sally = new Manager;
+// sally.name is ''
+// sally.dept is 'general'
+// sally.reports is []
+
+var mark = new WorkerBee;
+// mark.name is ''
+// mark.dept is 'general'
+// mark.projects is []
+
+var fred = new SalesPerson;
+// fred.name is ''
+// fred.dept is 'sales'
+// fred.projects is []
+// fred.quota is 100
+
+var jane = new Engineer;
+// jane.name is ''
+// jane.dept is 'engineering'
+// jane.projects is []
+// jane.machine is ''
