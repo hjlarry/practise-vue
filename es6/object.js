@@ -260,3 +260,31 @@ function Engineer(projs, mach) {
   WorkerBee.call(this, projs);
   this.machine = mach || "";
 }
+
+/*
+七、 属性继承
+*/
+
+// 在构造器中的属性，如果运行时修改，则无法影响到继承者，因为继承者会创建一个本地值
+function Employee() {
+  this.name = "empty";
+}
+function WorkerBee() {
+}
+WorkerBee.prototype = new Employee;
+
+var amy = new WorkerBee;
+Employee.prototype.name = "Unknown"
+console.log(amy.name); // empty
+
+// 不在构造器中则可以
+function Employee() {
+}
+Employee.prototype.name = "empty";
+function WorkerBee() {
+}
+WorkerBee.prototype = new Employee;
+
+var amy = new WorkerBee;
+Employee.prototype.name = "Unknown"
+console.log(amy.name); // Unknown
