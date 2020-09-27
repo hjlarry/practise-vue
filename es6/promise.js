@@ -42,3 +42,37 @@ doSomething().then(result => doSomethingElse(result))
   .then(finalResult => {
     console.log(`Got the final result: ${finalResult}`);
   }).catch(failureCallback);
+
+/*
+二、 错误处理
+通过catch，可以将多次的failureCallback失败回调改善为只在尾部调用一次
+*/
+
+new Promise((resolve, reject) => {
+  console.log('Initial');
+  resolve();
+}).then(() => {
+  throw new Error('Something failed');
+  console.log('Do this');    // 不会输出
+}).catch(() => {
+  console.error('Do that');
+}).then(() => {
+  console.log('Do this, no matter what happened before');
+});
+
+
+
+doSomething()
+  .then(result => doSomethingElse(value))
+  .then(newResult => doThirdThing(newResult))
+  .then(finalResult => console.log(`Got the final result: ${finalResult}`))
+  .catch(failureCallback);
+// 相当于：
+try {
+  let result = syncDoSomething();
+  let newResult = syncDoSomethingElse(result);
+  let finalResult = syncDoThirdThing(newResult);
+  console.log(`Got the final result: ${finalResult}`);
+} catch (error) {
+  failureCallback(error);
+}
