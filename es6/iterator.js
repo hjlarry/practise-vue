@@ -72,3 +72,38 @@ console.log(sequence.next(true).value); // 0
 console.log(sequence.next().value);     // 1
 console.log(sequence.next().value);     // 1
 console.log(sequence.next().value);     // 2
+
+/*
+三、 可迭代的
+一个对象拥有可迭代行为，如for...of的遍历，那么该对象为可迭代对象
+为实现可迭代，对象必须实现 @@iterator方法，意味着该对象或其原型链中的任一对象必须具有一个带Symbol.iterator键的属性
+*/
+
+// 自定义可迭代对象
+var myIterable = {
+  *[Symbol.iterator]() {
+    yield 1;
+    yield 2;
+    yield 3;
+  }
+}
+for (let value of myIterable) {
+  console.log(value);
+} // 1  2  3
+
+
+// 专用于可迭代对象的语法
+
+for (let value of ['a', 'b', 'c']) {
+  console.log(value);
+}
+
+[...'abc']; // ["a", "b", "c"]
+
+function* gen() {
+  yield* ['a', 'b', 'c'];
+}
+gen().next(); // { value: "a", done: false }
+
+[a, b, c] = new Set(['a', 'b', 'c']);
+a; // "a"
