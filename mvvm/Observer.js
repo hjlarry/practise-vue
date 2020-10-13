@@ -1,7 +1,3 @@
-var data = { name: "hello" };
-observe(data);
-data.name = "newworld";
-
 function observe(data) {
   if (!data || typeof data !== 'object') {
     return

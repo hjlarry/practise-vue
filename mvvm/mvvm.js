@@ -1,6 +1,6 @@
 function MVVM(options) {
   this.$options = options;
-  var data = this._data = this.$options.data();
+  var data = this._data = this.$options.data;
   var me = this;
   Object.keys(data).forEach(function(key) {
     me._proxy(key);
@@ -22,5 +22,8 @@ MVVM.prototype = {
         me._data[key] = newValue;
       },
     });
+  },
+  $watch: function(key, cb, options) {
+    new Watcher(this, key, cb);
   }
 }
