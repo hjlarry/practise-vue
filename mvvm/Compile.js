@@ -1,4 +1,5 @@
-function Compile(el) {
+function Compile(el, vm) {
+  this.$vm = vm;
   this.$el = this.isElementNode(el) ? el : document.querySelector(el);
   if (this.$el) {
     this.$fragment = this.node2Fragment(this.$el);
@@ -49,16 +50,33 @@ Compile.prototype = {
       }
     });
   },
-  compileText: function() { },
+  compileText: function(node, exp) {
+    compileUtil.text(node, this.$vm, exp);
+  },
   isElementNode: function(node) { return node.nodeType == 1; },
   isTextNode: function(node) { return node.nodeType == 3; },
-  isDirective: function(name) { },
-  isEventDirective: function(dir) { },
+  isDirective: function(attr) {
+    return attr.indexOf('v-') == 0;
+  },
+  isEventDirective: function(dir) {
+    return dir.indexOf('on') === 0;
+  },
 };
 
 var compileUtil = {
   text: function(node, vm, exp) {
     this.bind(node, vm, exp, 'text');
+  },
+  html: function(node, vm, exp) {
+    this.bind(node, vm, exp, 'html');
+  },
+  class: function(node, vm, exp) {
+    this.bind(node, vm, exp, 'class');
+  },
+  model: function(node, vm, exp) {
+    this.bind(node, vm, exp, 'model');
+    var me = this;
+    var val = this._getVMVal(vm, exp);
   },
   bind: function(node, vm, exp, dir) {
     var updaterFn = updater[dir + 'Updater'];
@@ -66,6 +84,21 @@ var compileUtil = {
     new Watcher(vm, exp, function(value, oldValue) {
       updaterFn && updaterFn(node, value, oldValue);
     });
+  },
+  _getVMVal: function(vm, exp) {
+    var val = vm;
+    exp = exp.split('.');
+    exp.forEach(function(k) {
+      val = val[k];
+    });
+    return val;
+  },
+  eventHandler: function(node, vm, exp, dir) {
+    var eventType = dir.split(':')[1];
+    var fn = vm.$options.methods && vm.$options.methods[exp];
+    if (eventType && fn) {
+      node.addEventListener(eventType, fn.bind(vm), false);
+    }
   }
 }
 

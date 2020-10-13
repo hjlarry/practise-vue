@@ -2,6 +2,7 @@ function Watcher(vm, expOrFn, cb) {
   this.vm = vm;
   this.expOrFn = expOrFn;
   this.cb = cb;
+  this.depIds = {};
   if (typeof expOrFn === 'function') {
     this.getter = expOrFn;
   } else {
@@ -35,6 +36,12 @@ Watcher.prototype = {
         obj = obj[exps[i]];
       }
       return obj;
+    }
+  },
+  addDep: function(dep) {
+    if (!this.depIds.hasOwnProperty(dep.id)) {
+      dep.addSub(this);
+      this.depIds[dep.id] = dep;
     }
   }
 }
