@@ -1,29 +1,33 @@
-function Compile(el, vm) {
-  this.$vm = vm;
-  this.$el = this.isElementNode(el) ? el : document.querySelector(el);
-  if (this.$el) {
-    this.$fragment = this.node2Fragment(this.$el);
-    this.init();
-    this.$el.appendChild(this.$fragment);
+class Compile {
+  constructor(el, vm) {
+    this.$vm = vm;
+    this.$el = this.isElementNode(el) ? el : document.querySelector(el);
+    if (this.$el) {
+      this.$fragment = this.node2Fragment(this.$el);
+      this.init();
+      this.$el.appendChild(this.$fragment);
+    }
   }
-}
 
-Compile.prototype = {
-  init: function() { this.compileElement(this.$fragment); },
-  node2Fragment: function(el) {
-    var fragment = document.createDocumentFragment();
-    var child;
+  init() {
+    this.compileElement(this.$fragment);
+  }
+
+  node2Fragment(el) {
+    let fragment = document.createDocumentFragment();
+    let child;
     while (child = el.firstChild) {
       fragment.appendChild(child);
     }
     return fragment;
-  },
-  compileElement: function(el) {
-    var childNodes = el.childNodes;
-    var me = this;
+  }
+
+  compileElement(el) {
+    let childNodes = el.childNodes;
+    let me = this;
     [].slice.call(childNodes).forEach(function(node) {
-      var text = node.textContent;
-      var reg = /\{\{(.*)\}\}/;
+      let text = node.textContent;
+      let reg = /\{\{(.*)\}\}/;
       if (me.isElementNode(node)) {
         me.compile(node);
       } else if (me.isTextNode(node) && reg.test(text)) {
@@ -33,15 +37,16 @@ Compile.prototype = {
         me.compileElement(node);
       }
     });
-  },
-  compile: function(node) {
-    var nodeAttrs = node.attributes;
-    var me = this;
+  }
+
+  compile(node) {
+    let nodeAttrs = node.attributes;
+    let me = this;
     [].slice.call(nodeAttrs).forEach(function(attr) {
-      var attrName = attr.name;
+      let attrName = attr.name;
       if (me.isDirective(attrName)) {
-        var exp = attr.value;
-        var dir = attrName.substring(2);
+        let exp = attr.value;
+        let dir = attrName.substring(2);
         if (me.isEventDirective(dir)) {
           compileUtil.eventHandler(node, me.$vm, exp, dir);
         } else {
@@ -49,19 +54,29 @@ Compile.prototype = {
         }
       }
     });
-  },
-  compileText: function(node, exp) {
+  }
+
+  compileText(node, exp) {
     compileUtil.text(node, this.$vm, exp);
-  },
-  isElementNode: function(node) { return node.nodeType == 1; },
-  isTextNode: function(node) { return node.nodeType == 3; },
-  isDirective: function(attr) {
+  }
+
+  isElementNode(node) {
+    return node.nodeType == 1;
+  }
+
+  isTextNode(node) {
+    return node.nodeType == 3;
+  }
+
+  isDirective(attr) {
     return attr.indexOf('v-') == 0;
-  },
-  isEventDirective: function(dir) {
+  }
+
+  isEventDirective(dir) {
     return dir.indexOf('on') === 0;
-  },
-};
+  }
+}
+
 
 var compileUtil = {
   text: function(node, vm, exp) {
@@ -75,10 +90,10 @@ var compileUtil = {
   },
   model: function(node, vm, exp) {
     this.bind(node, vm, exp, 'model');
-    var me = this;
-    var val = this._getVMVal(vm, exp);
+    let me = this;
+    let val = this._getVMVal(vm, exp);
     node.addEventListener('input', function(e) {
-      var newValue = e.target.value;
+      let newValue = e.target.value;
       if (val === newValue) {
         return;
       }
@@ -87,14 +102,14 @@ var compileUtil = {
     });
   },
   bind: function(node, vm, exp, dir) {
-    var updaterFn = updater[dir + 'Updater'];
+    let updaterFn = updater[dir + 'Updater'];
     updaterFn && updaterFn(node, vm[exp]);
     new Watcher(vm, exp, function(value, oldValue) {
       updaterFn && updaterFn(node, value, oldValue);
     });
   },
   _getVMVal: function(vm, exp) {
-    var val = vm;
+    let val = vm;
     exp = exp.split('.');
     exp.forEach(function(k) {
       val = val[k];
@@ -102,7 +117,7 @@ var compileUtil = {
     return val;
   },
   _setVMVal: function(vm, exp, value) {
-    var val = vm;
+    let val = vm;
     exp = exp.split('.');
     exp.forEach(function(k, i) {
       if (i < exp.length - 1) {
@@ -113,8 +128,8 @@ var compileUtil = {
     });
   },
   eventHandler: function(node, vm, exp, dir) {
-    var eventType = dir.split(':')[1];
-    var fn = vm.$options.methods && vm.$options.methods[exp];
+    let eventType = dir.split(':')[1];
+    let fn = vm.$options.methods && vm.$options.methods[exp];
     if (eventType && fn) {
       node.addEventListener(eventType, fn.bind(vm), false);
     }

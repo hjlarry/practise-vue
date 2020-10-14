@@ -5,24 +5,27 @@ function observe(value, vm) {
   return new Observer(value);
 }
 
-function Observer(data) {
-  this.data = data;
-  this.walk(data);
-}
 
-Observer.prototype = {
-  walk: function(data) {
-    var me = this;
+class Observer {
+  constructor(data) {
+    this.data = data;
+    this.walk(data);
+  }
+
+  walk(data) {
+    let me = this;
     Object.keys(data).forEach(function(key) {
       me.convert(key, data[key]);
     });
-  },
-  convert: function(key, value) {
+  }
+
+  convert(key, value) {
     this.defineReactive(this.data, key, value);
-  },
-  defineReactive: function(data, key, val) {
-    var dep = new Dep();
-    var childObj = observe(val); //监听子属性
+  }
+
+  defineReactive(data, key, val) {
+    let dep = new Dep();
+    let childObj = observe(val); //监听子属性
     Object.defineProperty(data, key, {
       enumerable: true,   //可枚举的
       configurable: false,    // 不可再define
@@ -45,25 +48,30 @@ Observer.prototype = {
   }
 }
 
+
+
 var uid = 0;
 
-function Dep() {
-  this.subs = [];
-  this.id = uid++;
-}
+class Dep {
+  constructor() {
+    this.subs = [];
+    this.id = uid++;
+  }
 
-Dep.prototype = {
-  addSub: function(sub) {
+  addSub(sub) {
     this.subs.push(sub);
-  },
-  notify: function() {
+  }
+
+  notify() {
     this.subs.forEach(function(sub) {
       sub.update();
     });
-  },
-  depend: function() {
+  }
+
+  depend() {
     Dep.target.addDep(this);
   }
-};
+}
+
 
 Dep.target = null;

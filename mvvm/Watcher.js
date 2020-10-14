@@ -1,47 +1,55 @@
-function Watcher(vm, expOrFn, cb) {
-  this.vm = vm;
-  this.expOrFn = expOrFn;
-  this.cb = cb;
-  this.depIds = {};
-  if (typeof expOrFn === 'function') {
-    this.getter = expOrFn;
-  } else {
-    this.getter = this.parseGetter(expOrFn.trim());
+class Watcher {
+  constructor(vm, expOrFn, cb) {
+    this.vm = vm;
+    this.expOrFn = expOrFn;
+    this.cb = cb;
+    this.depIds = {};
+    if (typeof expOrFn === 'function') {
+      this.getter = expOrFn;
+    } else {
+      this.getter = this.parseGetter(expOrFn.trim());
+    }
+    this.value = this.get();
   }
-  this.value = this.get();
-}
 
-Watcher.prototype = {
-  update: function() { this.run(); },
-  run: function() {
-    var value = this.get();
-    var oldValue = this.value;
+  update() {
+    this.run();
+  }
+
+  run() {
+    let value = this.get();
+    let oldValue = this.value;
     if (value != oldValue) {
       this.value = value;
       this.cb.call(this.vm, value, oldValue);
     }
-  },
-  get: function() {
+  }
+
+  get() {
     Dep.target = this;
-    var value = this.getter.call(this.vm, this.vm);
+    let value = this.getter.call(this.vm, this.vm);
     Dep.target = null;
     return value;
-  },
-  parseGetter: function(exp) {
+  }
+
+  parseGetter(exp) {
     if (/[^\w.$]/.test(exp)) return;
-    var exps = exp.split('.');
+    let exps = exp.split('.');
     return function(obj) {
-      for (var i = 0, len = exps.length; i < len; i++) {
+      for (let i = 0, len = exps.length; i < len; i++) {
         if (!obj) return;
         obj = obj[exps[i]];
       }
       return obj;
     }
-  },
-  addDep: function(dep) {
+  }
+
+  addDep(dep) {
     if (!this.depIds.hasOwnProperty(dep.id)) {
       dep.addSub(this);
       this.depIds[dep.id] = dep;
     }
   }
 }
+
+

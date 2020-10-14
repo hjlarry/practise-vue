@@ -41,11 +41,11 @@
 
                 methods: {
                     clickBtn1: function(e) {
-                        var randomStrArr = ['childOne', 'childTwo', 'childThree'];
+                        const randomStrArr = ['childOne', 'childTwo', 'childThree'];
                         this.child.someStr = randomStrArr[parseInt(Math.random() * 3)];
                     },
                     clickBtn2: function(e) {
-                        var randomColor = ['blue', 'green', 'yellow'];
+                        const randomColor = ['blue', 'green', 'yellow'];
                         let color = randomColor[parseInt(Math.random() * 3)];
                         this.htmlStr = '<span style="color:' + color + ';">color</span>'
                     }
@@ -53,7 +53,7 @@
             });
 
             vm.$watch('child.someStr', function() {
-                console.log(arguments, 88);
+                console.log(arguments);
             });
         </script>
 
