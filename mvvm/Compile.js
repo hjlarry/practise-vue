@@ -77,6 +77,14 @@ var compileUtil = {
     this.bind(node, vm, exp, 'model');
     var me = this;
     var val = this._getVMVal(vm, exp);
+    node.addEventListener('input', function(e) {
+      var newValue = e.target.value;
+      if (val === newValue) {
+        return;
+      }
+      me._setVMVal(vm, exp, newValue);
+      val = newValue;
+    });
   },
   bind: function(node, vm, exp, dir) {
     var updaterFn = updater[dir + 'Updater'];
@@ -92,6 +100,17 @@ var compileUtil = {
       val = val[k];
     });
     return val;
+  },
+  _setVMVal: function(vm, exp, value) {
+    var val = vm;
+    exp = exp.split('.');
+    exp.forEach(function(k, i) {
+      if (i < exp.length - 1) {
+        val = val[k];
+      } else {
+        val[k] = value;
+      }
+    });
   },
   eventHandler: function(node, vm, exp, dir) {
     var eventType = dir.split(':')[1];
