@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>MVVM</title>
+    </head>
+
+    <body>
+        <div id="app">
+            <input type="text" v-model="text">
+            <p>{{ text }}</p>
+            <button @click="reset">reset</button>
+        </div>
+
+        <script src="./index.js"></script>
+        <script>
+            var vm = new MVVM({
+                el: '#app',
+                data: {
+                    text: 'hello world'
+                },
+                methods: {
+                    reset() {
+                        this.text = '';
+                    },
+                }
+            });
+        </script>
+
+    </body>
+
+</html>
