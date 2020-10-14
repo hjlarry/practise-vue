@@ -11,16 +11,12 @@
         <div id="mvvm-app">
             <input type="text" v-model="someStr">
             <input type="text" v-model="child.someStr">
-            <!-- <p v-class="className" class="abc">
-        {{someStr}}
-        <span v-text="child.someStr"></span>
-    </p> -->
             <p>{{ getHelloWord }}</p>
             <p v-html="htmlStr"></p>
-            <button v-on:click="clickBtn">change model</button>
+            <button v-on:click="clickBtn1">change model</button>
+            <button v-on:click="clickBtn2">change html</button>
         </div>
 
-        <!-- <script src="http://cdn.bootcss.com/vue/1.0.25/vue.js"></script> -->
         <script src="./observer.js"></script>
         <script src="./watcher.js"></script>
         <script src="./compile.js"></script>
@@ -44,9 +40,14 @@
                 },
 
                 methods: {
-                    clickBtn: function(e) {
+                    clickBtn1: function(e) {
                         var randomStrArr = ['childOne', 'childTwo', 'childThree'];
                         this.child.someStr = randomStrArr[parseInt(Math.random() * 3)];
+                    },
+                    clickBtn2: function(e) {
+                        var randomColor = ['blue', 'green', 'yellow'];
+                        let color = randomColor[parseInt(Math.random() * 3)];
+                        this.htmlStr = '<span style="color:' + color + ';">color</span>'
                     }
                 }
             });

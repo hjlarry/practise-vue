@@ -124,5 +124,13 @@ var compileUtil = {
 var updater = {
   textUpdater: function(node, value) {
     node.textContent = typeof value == 'undefined' ? '' : value;
-  }
+  },
+
+  htmlUpdater: function(node, value) {
+    node.innerHTML = typeof value == 'undefined' ? '' : value;
+  },
+
+  modelUpdater: function(node, value) {
+    node.value = typeof value == 'undefined' ? '' : value;
+  },
 }
