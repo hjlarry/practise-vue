@@ -9,14 +9,14 @@
     <body>
         <div id="app">
             <input type="text" v-model="text">
-            <p>{{ text }}</p>
+            {{ text }}
             <button @click="reset">reset</button>
         </div>
 
         <script src="./index.js"></script>
         <script>
             var vm = new MVVM({
-                el: '#app',
+                el: 'app',
                 data: {
                     text: 'hello world'
                 },
